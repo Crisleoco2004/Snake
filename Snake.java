@@ -1,11 +1,7 @@
 import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.Graphics;
-
 import javax.swing.JFrame;
-
-
-
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,41 +14,34 @@ public class Snake extends JFrame
 
     int width = 640;
     int height = 480;
-
+    static int minutos = 0;
+    static int segundos = 0;
     Point snake;
     Point comida;
-    
-
-    boolean gameOver = false;
-
+    static boolean gameOver = false;
     int widthPoint = 10;
     int heightPoint = 10;
-
-    long frecuencia = 50;
-
+    static long frecuencia = 100;
     ArrayList<Point> lista = new ArrayList<Point>();
-
     int direccion = KeyEvent.VK_LEFT;
-
     ImagenSnake imagenSnake;
 
-    public Snake()
-    {
+    public Snake() {
         setTitle("Snake");
         setSize(width, height);
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-width/2, dim.height/2-height/2);
+        this.setLocation(dim.width / 2 - width / 2, dim.height / 2 - height / 2);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Teclas teclas = new Teclas();
         this.addKeyListener(teclas);
 
-        snake = new Point(width/2,height/2);
+        snake = new Point(width / 2, height / 2);
 
         startGame();
-        
+
         imagenSnake = new ImagenSnake();
         this.getContentPane().add(imagenSnake);
 
@@ -63,51 +52,57 @@ public class Snake extends JFrame
         trid.start();
     }
 
-    public void startGame()
-    {
-        comida = new Point(200,200);
-        snake = new Point(width/2,height/2);
+    public void startGame() {
+        comida = new Point(200, 200);
+        snake = new Point(width / 2, height / 2);
         crearComida();
         lista = new ArrayList<Point>();
-        //lista.add(snake);
+        // lista.add(snake);
         crearComida();
     }
 
-    public void puntaje()
-    {
-
-    }
-
-    public void crearComida()
-    {
+    public void crearComida() {
         Random rnd = new Random();
-        
 
         comida.x = rnd.nextInt(width);
-        if((comida.x % 10) < 500)
-        {
+        if ((comida.x % 10) < 500) {
             comida.x = comida.x - (comida.x % 5);
         }
-        if(comida.x > 600)
-        {
+        if (comida.x > 600) {
             comida.x = comida.x - 50;
         }
-        System.out.println("comida x: " + comida.x);
         comida.y = rnd.nextInt(height);
-        if((comida.y % 10) < 350)
-        {
+        if ((comida.y % 10) < 350) {
             comida.y = comida.y - (comida.y % 5);
         }
-        if(comida.y > 440)
-        {
-            comida.y = comida.y - 50;
+        if (comida.y > 440) {
+            comida.y = comida.y - 80;
         }
-        System.out.println("comida y: " + comida.y);
-
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         Snake s = new Snake();
+        for (minutos = 0; minutos < 60; minutos++) {
+            for (segundos = 0; segundos < 60; segundos++) {
+                delaySegundo();
+                if (gameOver)
+                {
+                    break;
+                }
+            }
+            if (gameOver)
+            {
+                break;
+            }
+        }
+    }
+    
+    private static void delaySegundo()
+    {
+        try
+        {
+            Thread.sleep(1000);
+        }catch(InterruptedException e){}
     }
 
     public void actualizar()
@@ -128,6 +123,7 @@ public class Snake extends JFrame
         if((snake.x > (comida.x - 10)) && (snake.x < (comida.x + 10)) && (snake.y > (comida.y - 10)) && (snake.y < (comida.y + 10)))
         {
             lista.add(0,new Point(snake.x,snake.y));
+            frecuencia--;
             crearComida();
         }
     }
@@ -148,8 +144,9 @@ public class Snake extends JFrame
             g.setColor(new Color (255, 0, 0));
             g.fillRect(comida.x, comida.y, widthPoint, heightPoint);
 
-            g.setColor(new Color (0, 200, 0));
+            g.setColor(new Color (100, 200, 0));
             g.drawString("SCORE: " + lista.size(), 10, 10);
+            g.drawString("TIME: " + minutos + ":" + segundos, 150 , 10);
 
             if(gameOver)
             {
@@ -159,6 +156,7 @@ public class Snake extends JFrame
                 g.drawString("GAME OVER", width/2 - 30, height/2);
                 g.drawString("Press (esc) for exit.", width/2 - 30, height/2 + 10);
                 g.drawString("Your score was: " + lista.size(), width/2 - 30, height/2 + 20);
+                g.drawString("Your time was: : " + minutos + ":" + segundos, width/2 - 30, height/2 + 30);
             }
         }
     }
