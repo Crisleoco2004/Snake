@@ -21,13 +21,14 @@ public class Snake extends JFrame
 
     Point snake;
     Point comida;
+    
 
     boolean gameOver = false;
 
     int widthPoint = 10;
     int heightPoint = 10;
 
-    long frecuencia = 100;
+    long frecuencia = 50;
 
     ArrayList<Point> lista = new ArrayList<Point>();
 
@@ -72,28 +73,36 @@ public class Snake extends JFrame
         crearComida();
     }
 
+    public void puntaje()
+    {
+
+    }
+
     public void crearComida()
     {
         Random rnd = new Random();
+        
 
         comida.x = rnd.nextInt(width);
-        if((comida.x % 10) < 600)
+        if((comida.x % 10) < 500)
         {
             comida.x = comida.x - (comida.x % 5);
         }
         if(comida.x > 600)
         {
-            comida.x = comida.x + 5;
+            comida.x = comida.x - 50;
         }
+        System.out.println("comida x: " + comida.x);
         comida.y = rnd.nextInt(height);
-        if((comida.y % 10) < 440)
+        if((comida.y % 10) < 350)
         {
             comida.y = comida.y - (comida.y % 5);
         }
         if(comida.y > 440)
         {
-            comida.y = comida.y + 5;
+            comida.y = comida.y - 50;
         }
+        System.out.println("comida y: " + comida.y);
 
     }
 
@@ -139,6 +148,9 @@ public class Snake extends JFrame
             g.setColor(new Color (255, 0, 0));
             g.fillRect(comida.x, comida.y, widthPoint, heightPoint);
 
+            g.setColor(new Color (0, 200, 0));
+            g.drawString("SCORE: " + lista.size(), 10, 10);
+
             if(gameOver)
             {
                 g.setColor(new Color (185, 193, 231));
@@ -146,6 +158,7 @@ public class Snake extends JFrame
                 g.setColor(new Color (0, 0, 0));
                 g.drawString("GAME OVER", width/2 - 30, height/2);
                 g.drawString("Press (esc) for exit.", width/2 - 30, height/2 + 10);
+                g.drawString("Your score was: " + lista.size(), width/2 - 30, height/2 + 20);
             }
         }
     }
